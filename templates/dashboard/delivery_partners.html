@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delivery Partners</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            padding-top: 56px; /* Height of navbar */
+        }
+        .sidebar {
+            height: calc(100vh - 56px); /* Adjust height to account for navbar */
+            position: fixed; /* Fix the sidebar to the left */
+            width: 250px; /* Set a fixed width for the sidebar */
+            background-color: #f8f9fa; /* Background color for the sidebar */
+            padding-top: 20px; /* Padding for the sidebar */
+        }
+        .content {
+            margin-left: 250px; /* Adjust based on sidebar width */
+            padding: 20px;
+        }
+        .card {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    {% include 'dashboard/navbar.html' %}
+    <div class="sidebar">
+        {% include 'dashboard/sidebar.html' %}
+    </div>
+    <div class="content">
+        <header>
+            <h1>Delivery Partners</h1>
+            <p>Welcome to the Delivery Partners page!</p>
+        </header>
+        <main>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Zomato ID</th>
+                        <th>UPI ID</th>
+                        <th>Phone</th>
+                        <th>Bann</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for profile in profiles %}
+                    <tr>
+                        <td>{{ profile.name }}</td>
+                        <td>{{ profile.zomato_id }}</td>
+                        <td>{{ profile.upi_id }}</td>
+                        <td>{{ profile.phone }}</td>
+                        <td>{{ profile.bann }}</td>
+                        <td>{{ profile.email }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <!-- Add more content as needed -->
+        </main>
+    </div>
+</body>
+</html>

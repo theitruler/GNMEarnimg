@@ -1,0 +1,184 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+    <a class="navbar-brand font-weight-bold" href="{{ url_for('home') }}">
+        <i class="fas fa-utensils mr-2"></i>Grills N More
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <label class="toggle-container" {% if user_role == 'admin' %}style="display: block;"{% else %}style="display: none;"{% endif %}>
+        <input type="checkbox" class="toggle-input" id="toggleSwitch">
+        <span class="toggle-slider"></span>
+    </label>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('dashboard') }}">
+                    <i class="fas fa-home mr-1"></i>Dashboard
+                </a>
+            </li>
+        </ul>
+        <div class="profile-section d-flex align-items-center">
+            <span class="mr-3 text-white">
+                <i class="fas fa-user mr-1"></i>{{ user_name }}
+            </span>
+            <div class="dropdown">
+                <img src="https://ui-avatars.com/api/?name={{ user_name }}&background=random" 
+                     alt="Profile" 
+                     class="rounded-circle profile-avatar" 
+                     data-toggle="dropdown"
+                     style="cursor: pointer;">
+                <div class="dropdown-menu dropdown-menu-right shadow">
+                    <a class="dropdown-item" href="#">
+                        <i class="fas fa-user-circle mr-2"></i>Profile
+                    </a>
+                    <a class="dropdown-item" href="#">
+                        <i class="fas fa-cog mr-2"></i>Settings
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item text-danger" href="{{ url_for('logout') }}">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<style>
+    .navbar {
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        padding: 0.8rem 1rem;
+    }
+
+    .navbar-brand {
+        font-size: 1.4rem;
+    }
+
+    .profile-avatar {
+        width: 40px;
+        height: 40px;
+        object-fit: cover;
+        border: 2px solid rgba(255,255,255,0.3);
+        transition: transform 0.2s;
+    }
+
+    .profile-avatar:hover {
+        transform: scale(1.1);
+    }
+
+    .profile-section {
+        margin-right: 15px;
+    }
+
+    .dropdown-menu {
+        margin-top: 10px;
+        border: none;
+        border-radius: 8px;
+    }
+
+    .dropdown-item {
+        padding: 0.7rem 1.5rem;
+        transition: all 0.2s;
+    }
+
+    .dropdown-item:hover {
+        background-color: #f8f9fa;
+        transform: translateX(5px);
+    }
+
+    .nav-link {
+        padding: 0.5rem 1rem;
+        transition: all 0.2s;
+    }
+
+    .nav-link:hover {
+        transform: translateY(-2px);
+    }
+
+    /* Custom Toggle Switch Styles */
+    .toggle-container {
+        position: relative;
+        width: 60px;
+        height: 34px;
+        margin-left: 15px; /* Add some margin for spacing */
+    }
+
+    .toggle-input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .toggle-slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: white; /* Default color when off */
+        border-radius: 34px;
+        transition: .4s;
+        border: 2px solid #4ade80; /* Border color */
+    }
+
+    .toggle-slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: #4ade80; /* Knob color */
+        border-radius: 50%;
+        transition: .4s;
+    }
+
+    .toggle-input:checked + .toggle-slider {
+        background-color: #4ade80; /* Color when on */
+    }
+
+    .toggle-input:checked + .toggle-slider:before {
+        transform: translateX(26px);
+    }
+</style>
+
+<script>
+    document.getElementById('toggleSwitch').addEventListener('change', function() {
+        if (this.checked) {
+            // Make a POST request to toggle the bann field to True
+            fetch('/toggle_bann', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message); // Show success message
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to update users.');
+            });
+        } else {
+            // Make a POST request to toggle the bann field to False
+            fetch('/toggle_bann_off', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message); // Show success message
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to update users.');
+            });
+        }
+    });
+</script> 

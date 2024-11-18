@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Withdraw</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        .content-wrapper {
+            margin-left: 250px;
+            padding: 20px;
+            margin-top: 56px;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        
+        .card-header {
+            background-color: #f8f9fa;
+            border-bottom: none;
+            padding: 20px;
+        }
+        
+        .table th {
+            background-color: #f8f9fa;
+            border-top: none;
+        }
+        
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.85em;
+        }
+        
+        .status-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .btn-mark-success {
+            border-radius: 20px;
+            padding: 5px 15px;
+            font-size: 0.85em;
+        }
+
+        .amount-cell {
+            font-weight: bold;
+            color: #28a745;
+        }
+
+        .table-responsive {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table td, .table th {
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+    {% with user_email=user_email %}
+        {% include 'dashboard/navbar.html' %}
+    {% endwith %}
+    {% include 'dashboard/sidebar.html' %}
+    
+    <div class="content-wrapper">
+        <div class="container-fluid">
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4 class="mb-0"><i class="fas fa-history mr-2"></i>Withdrawal History</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th><i class="fas fa-rupee-sign mr-1"></i>Amount</th>
+                                    <th><i class="fas fa-check-circle mr-1"></i>Status</th>
+                                    <th><i class="fas fa-id-card mr-1"></i>UPI ID</th>
+                                    <th><i class="fas fa-cog mr-1"></i>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for withdrawal in withdrawals %}
+                                <tr>
+                                    <td class="amount-cell">₹{{ withdrawal.amount }}</td>
+                                    <td>
+                                        <span class="status-badge {% if withdrawal.success %}status-success{% else %}status-pending{% endif %}">
+                                            {% if withdrawal.success %}
+                                                <i class="fas fa-check-circle mr-1"></i>Completed
+                                            {% else %}
+                                                <i class="fas fa-clock mr-1"></i>Pending
+                                            {% endif %}
+                                        </span>
+                                    </td>
+                                    <td>{{ withdrawal.upi_id }}</td>
+                                    <td>
+                                        <form action="{{ url_for('update_withdrawal', withdrawal_id=withdrawal.id) }}" method="POST">
+                                            <input type="hidden" name="success" value="true">
+                                            <button type="submit" class="btn btn-success">Mark Complete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

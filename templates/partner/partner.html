@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Become a Partner - Start Earning Today</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="max-w-4xl mx-auto px-4 py-16">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-900 mb-4">Join Our Partner Network</h1>
+            <p class="text-xl text-gray-600 mb-8">Turn Every Ride into an Opportunity</p>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-xl p-8 mb-12">
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <h2 class="text-2xl font-semibold text-gray-900 mb-4">Why Partner With Us?</h2>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <svg class="h-6 w-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span class="text-gray-700">Flexible working hours - Be your own boss</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="h-6 w-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span class="text-gray-700">Competitive earnings - Make more with every trip</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="h-6 w-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span class="text-gray-700">24/7 support - We're here when you need us</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="text-center">
+                    <img src="/api/placeholder/300/200" alt="Partner App Preview" class="mx-auto mb-6 rounded-lg shadow-lg">
+                    <a href="{{ download_url }}" class="inline-block bg-blue-600 text-white font-semibold px-8 py-4 rounded-lg shadow-lg hover:bg-blue-700 transition duration-200" {% if not download_url %}disabled{% endif %}>
+                        Download Partner App
+                    </a>
+                    <p class="text-sm text-gray-500 mt-4">Available only on Android</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-blue-50 rounded-lg p-8">
+            <h3 class="text-xl font-semibold text-gray-900 mb-4">Getting Started is Easy</h3>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="text-center">
+                    <div class="bg-white w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-blue-600 font-bold text-xl">1</span>
+                    </div>
+                    <h4 class="font-semibold mb-2">Download the App</h4>
+                    <p class="text-gray-600">Get our partner app from your device's app store</p>
+                </div>
+                <div class="text-center">
+                    <div class="bg-white w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-blue-600 font-bold text-xl">2</span>
+                    </div>
+                    <h4 class="font-semibold mb-2">Sign Up</h4>
+                    <p class="text-gray-600">Complete your profile and verification</p>
+                </div>
+                <div class="text-center">
+                    <div class="bg-white w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-blue-600 font-bold text-xl">3</span>
+                    </div>
+                    <h4 class="font-semibold mb-2">Start Earning</h4>
+                    <p class="text-gray-600">Click Pictures and earn money on your schedule</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

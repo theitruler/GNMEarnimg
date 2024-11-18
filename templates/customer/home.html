@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grills N More | Premium Grilled Delicacies</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .hero-pattern {
+            background-color: #000000;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), 
+                            url('https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .offer-badge {
+            background: linear-gradient(45deg, #ff4e50, #f9d423);
+            animation: shine 1.5s infinite;
+        }
+
+        .countdown-box {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        @keyframes shine {
+            0% { opacity: 1; }
+            50% { opacity: 0.8; }
+            100% { opacity: 1; }
+        }
+
+        .nav-link {
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: #DC2626;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .hero-button {
+            transition: transform 0.2s ease;
+        }
+
+        .hero-button:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg fixed w-full z-50">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center space-x-2">
+                    <img src="/static/images/logo.png" alt="Logo" class="h-10 w-10 rounded-full">
+                    <div class="text-2xl font-bold text-gray-800">Grills N More</div>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#" class="nav-link text-gray-600 hover:text-gray-900 font-medium">Home</a>
+                    <a href="#offers" class="nav-link text-gray-600 hover:text-gray-900 font-medium">Offers</a>
+                    <a href="#contact" class="nav-link text-gray-600 hover:text-gray-900 font-medium">Contact</a>
+                </div>
+                <div>
+                    <a href="https://www.zomato.com/bangalore/grills-n-more-kalyan-nagar-bangalore/order" 
+                       class="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition duration-300 font-medium shadow-md hover:shadow-lg">
+                        Order Now
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero-pattern min-h-screen flex items-center justify-center text-center px-4 py-20">
+        <div class="text-white max-w-4xl">
+            <h1 class="hero-title text-6xl md:text-7xl font-bold mb-6 leading-tight">
+                Welcome to Grills N More
+            </h1>
+            <p class="text-2xl md:text-3xl mb-8 font-light">Experience the finest grilled delicacies</p>
+            
+            <div class="countdown-box inline-block mb-8">
+                <p class="text-xl mb-3 text-yellow-400 font-semibold">🎁 Special Offer!</p>
+                <div id="countdown" class="text-3xl font-bold mb-2"></div>
+                <p class="text-lg text-yellow-300">Get your free Biryani on Any Order!</p>
+            </div>
+
+            <div class="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-6 mt-8">
+                <a href="#offers" 
+                   class="hero-button bg-red-600 text-white px-10 py-4 rounded-lg hover:bg-red-700 transition duration-300 font-semibold shadow-lg w-64">
+                    View Special Offers
+                </a>
+                <a href="tel:+919876543210" 
+                   class="hero-button bg-transparent border-2 border-white text-white px-10 py-4 rounded-lg hover:bg-white hover:text-black transition duration-300 font-semibold w-64">
+                    Book a Table
+                </a>
+            </div>
+
+            <div class="mt-12 flex justify-center space-x-6">
+                <div class="flex items-center">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/7/75/Zomato_logo.png" 
+                         alt="Zomato" class="h-8 mr-2">
+                    <span class="text-lg">4.8 ★</span>
+                </div>
+                <div class="flex items-center">
+                    <svg class="w-6 h-6 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    <span>100% Hygiene Certified</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Countdown Timer
+        const countdownDate = new Date("November 23, 2024 00:00:00").getTime();
+        const countdownElement = document.getElementById("countdown");
+
+        const updateCountdown = () => {
+            const now = new Date().getTime();
+            const distance = countdownDate - now;
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            countdownElement.innerHTML = `
+                <div class="grid grid-cols-4 gap-4">
+                    <div>
+                        <span class="text-4xl font-bold">${days}</span>
+                        <div class="text-sm">Days</div>
+                    </div>
+                    <div>
+                        <span class="text-4xl font-bold">${hours}</span>
+                        <div class="text-sm">Hours</div>
+                    </div>
+                    <div>
+                        <span class="text-4xl font-bold">${minutes}</span>
+                        <div class="text-sm">Minutes</div>
+                    </div>
+                    <div>
+                        <span class="text-4xl font-bold">${seconds}</span>
+                        <div class="text-sm">Seconds</div>
+                    </div>
+                </div>
+            `;
+
+            if (distance < 0) {
+                clearInterval(timer);
+                countdownElement.innerHTML = "<div class='text-2xl text-red-500'>Offer has ended!</div>";
+            }
+        };
+
+        updateCountdown();
+        const timer = setInterval(updateCountdown, 1000);
+    </script>
+
+    <!-- Features Section -->
+    <div class="py-16 bg-white">
+        <div class="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="text-center">
+                <div class="bg-red-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Fast Delivery</h3>
+                <p class="text-gray-600">Hot and fresh food delivered to your doorstep</p>
+            </div>
+            <div class="text-center">
+                <div class="bg-red-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Fresh Ingredients</h3>
+                <p class="text-gray-600">Quality ingredients sourced daily</p>
+            </div>
+            <div class="text-center">
+                <div class="bg-red-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Satisfied Customers</h3>
+                <p class="text-gray-600">Rated 4.5+ on Zomato</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Special Offers Section -->
+    <div id="offers" class="py-20 bg-gray-50">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4 text-gray-800">Special Offers</h2>
+                <p class="text-xl text-gray-600">Exclusive deals that'll make your day special</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Free Biryani Offer Card -->
+                <div class="bg-white rounded-2xl shadow-xl overflow-hidden transform hover:scale-105 transition duration-300 border-2 border-yellow-500">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?ixlib=rb-4.0.3" 
+                             alt="Biryani" 
+                             class="w-full h-48 object-cover">
+                        <div class="absolute top-4 right-4">
+                            <span class="bg-yellow-500 text-white px-4 py-2 rounded-full font-bold animate-pulse">
+                                FREE
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-2xl font-bold mb-2 text-gray-800">Free Biryani Offer</h3>
+                        <p class="text-gray-600 mb-4">Order above ₹999 and get a free Chicken Biryani worth ₹299!</p>
+                        <ul class="text-gray-600 mb-6 space-y-2">
+                            <li class="flex items-center">
+                                <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                </svg>
+                                Valid on all orders above ₹999
+                            </li>
+                            <li class="flex items-center">
+                                <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                </svg>
+                                Available for both dine-in & delivery
+                            </li>
+                            <li class="flex items-center">
+                                <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                </svg>
+                                No coupon code needed
+                            </li>
+                        </ul>
+                        <a href="https://www.zomato.com/bangalore/grills-n-more-kalyan-nagar-bangalore/order" 
+                           class="block text-center bg-yellow-500 text-white px-6 py-3 rounded-lg hover:bg-yellow-600 transition duration-300 font-semibold shadow-md">
+                            Claim Offer
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Weekend Special -->
+                <div class="bg-white rounded-2xl shadow-xl overflow-hidden transform hover:scale-105 transition duration-300">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1532636875304-0c89119d9b4d?ixlib=rb-4.0.3" 
+                             alt="Weekend Special" 
+                             class="w-full h-48 object-cover">
+                        <div class="absolute top-4 right-4">
+                            <span class="offer-badge text-white px-4 py-2 rounded-full font-bold">
+                                25% OFF
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-2xl font-bold mb-2 text-gray-800">Weekend Special</h3>
+                        <p class="text-gray-600 mb-4">Make your weekends more special</p>
+                        <ul class="text-gray-600 mb-6 space-y-2">
+                            <li class="flex items-center">
+                                <svg class="w-5 h-5 text-red-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                </svg>
+                                1 Full Grilled Chicken
+                            </li>
+                            <li class="flex items-center">
+                                <svg class="w-5 h-5 text-red-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                </svg>
+                                2 Sides of Choice
+                            </li>
+                            <li class="flex items-center">
+                                <svg class="w-5 h-5 text-red-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                </svg>
+                                1L Soft Drink
+                            </li>
+                        </ul>
+                        <div class="flex justify-between items-center mb-4">
+                            <div>
+                                <span class="text-lg line-through text-gray-400">₹999</span>
+                                <span class="text-2xl font-bold text-gray-800 ml-2">₹749</span>
+                            </div>
+                        </div>
+                        <a href="https://www.zomato.com/bangalore/grills-n-more-kalyan-nagar-bangalore/order" 
+                           class="block text-center bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition duration-300 font-semibold shadow-md">
+                            Order Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Section -->
+    <div id="contact" class="py-16 bg-white">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-4">Visit Us</h2>
+                <p class="text-gray-600">Kalyan Nagar, Bangalore</p>
+                <p class="text-gray-600">Open: 11:00 AM - 11:00 PM</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-gray-100 p-6 rounded-lg">
+                    <h3 class="text-xl font-semibold mb-4">Contact Us</h3>
+                    <p class="mb-2">Phone: +91 9876543210</p>
+                    <p class="mb-2">Email: info@grillsnmore.com</p>
+                    <div class="mt-4">
+                        <a href="https://www.zomato.com/bangalore/grills-n-more-kalyan-nagar-bangalore/order" 
+                           class="bg-red-600 text-white px-6 py-2 rounded-md hover:bg-red-700 transition duration-300 inline-block">
+                            Order on Zomato
+                        </a>
+                    </div>
+                </div>
+                <div class="bg-gray-100 p-6 rounded-lg">
+                    <h3 class="text-xl font-semibold mb-4">Opening Hours</h3>
+                    <p class="mb-2">Monday - Sunday</p>
+                    <p class="mb-2">11:00 AM - 11:00 PM</p>
+                    <p class="text-sm text-gray-600 mt-4">* Delivery available through Zomato</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <p>© 2024 Grills N More. All rights reserved.</p>
+            <div class="mt-4">
+                <a href="#" class="text-gray-400 hover:text-white mx-2">Privacy Policy</a>
+                <a href="#" class="text-gray-400 hover:text-white mx-2">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

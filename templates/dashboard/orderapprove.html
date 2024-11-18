@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Approval</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        
+        .content {
+            margin-left: 220px;
+            padding: 2rem;
+            margin-top: 56px;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, #6B73FF 0%, #000DFF 100%);
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .page-header h1 {
+            color: white;
+            margin: 0;
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            border-top: none;
+            border-bottom: 2px solid #e9ecef;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .table td {
+            vertical-align: middle;
+        }
+
+        .image-preview {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .image-preview:hover {
+            transform: scale(1.05);
+        }
+
+        .badge {
+            padding: 0.5em 1em;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        .badge-warning {
+            background-color: #ffd43b;
+            color: #664d03;
+        }
+
+        .badge-success {
+            background-color: #40c057;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: #228be6;
+            border-color: #228be6;
+        }
+
+        .btn-primary:hover {
+            background-color: #1c7ed6;
+            border-color: #1c7ed6;
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            background-color: #fa5252;
+            border-color: #fa5252;
+        }
+
+        .btn-danger:hover {
+            background-color: #e03131;
+            border-color: #e03131;
+            transform: translateY(-1px);
+        }
+
+        .btn-success {
+            background-color: #40c057;
+            border-color: #40c057;
+        }
+
+        .alert {
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .table tr {
+            transition: background-color 0.2s;
+        }
+
+        .table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .status-cell {
+            min-width: 100px;
+        }
+    </style>
+</head>
+<body>
+    {% include 'dashboard/navbar.html' %}
+    {% include 'dashboard/sidebar.html' %}
+
+    <div class="content">
+        <div class="page-header">
+            <h1><i class="fas fa-check-circle mr-2"></i>Order Approval</h1>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show animate__animated animate__fadeIn" role="alert">
+                        <i class="fas fa-{{ 'check-circle' if category == 'success' else 'exclamation-circle' }} mr-2"></i>
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                        <th>Image</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for image in images %}
+                    <tr>
+                        <td><strong>#{{ image.id }}</strong></td>
+                        <td>₹{{ "%.2f"|format(image.price|float) }}</td>
+                        <td class="status-cell">
+                            <span class="badge badge-{{ 'success' if image.status == 'approved' else 'warning' }}">
+                                <i class="fas fa-{{ 'check' if image.status == 'approved' else 'clock' }} mr-1"></i>
+                                {{ image.status|title }}
+                            </span>
+                        </td>
+                        <td>
+                            <img src="{{ image.image_url }}" 
+                                 alt="{{ image.name }}" 
+                                 class="image-preview"
+                                 onclick="window.open(this.src)">
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                {% if image.status != 'approved' %}
+                                    <form action="{{ url_for('approve_image', id=image.id) }}" method="POST" class="d-inline">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-check mr-1"></i>Approve
+                                        </button>
+                                    </form>
+                                    <button class="btn btn-danger" data-toggle="modal" data-target="#rejectModal" data-image-id="{{ image.id }}">
+                                        <i class="fas fa-times mr-1"></i>Reject
+                                    </button>
+                                {% else %}
+                                    <button class="btn btn-success" disabled>
+                                        <i class="fas fa-check-circle mr-1"></i>Approved
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Reject Modal -->
+    <div class="modal fade" id="rejectModal" tabindex="-1" role="dialog" aria-labelledby="rejectModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="rejectModalLabel">Reject Image</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="rejectForm" method="POST">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="reason">Select Reason for Rejection:</label>
+                            <select class="form-control" id="reason" name="reason" required>
+                                <option value="">Choose...</option>
+                                <option value="Blur">Blur</option>
+                                <option value="Inappropriate">Inappropriate</option>
+                                <option value="Low Quality">Low Quality</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-danger">Reject</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://kit.fontawesome.com/your-font-awesome-kit.js"></script>
+    <script>
+        // Updated JavaScript to properly set the form action
+        $('#rejectModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var imageId = button.data('image-id');
+            var modal = $(this);
+            // Set the form action with the correct image ID
+            modal.find('#rejectForm').attr('action', '/dashboard/orderapprove/reject/' + imageId);
+        });
+    </script>
+</body>
+</html>

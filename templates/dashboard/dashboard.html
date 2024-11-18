@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            padding-top: 56px; /* Height of navbar */
+        }
+        .sidebar {
+            height: calc(100vh - 56px); /* Adjust height to account for navbar */
+        }
+        .content {
+            margin-left: 250px; /* Adjust based on sidebar width */
+            padding: 20px;
+        }
+        .card {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    {% with user_email=user_email %}
+        {% include 'dashboard/navbar.html' %}
+    {% endwith %}
+    {% include 'dashboard/sidebar.html' %}
+    
+    <div class="content">
+        <h1>Welcome to the Dashboard</h1>
+        <p>Your email: {{ user_email }}</p>
+
+        <!-- User Statistics Section -->
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card text-white bg-primary">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Orders</h5>
+                        <p class="card-text">150</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-white bg-success">
+                    <div class="card-body">
+                        <h5 class="card-title">Approved Orders</h5>
+                        <p class="card-text">120</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-white bg-danger">
+                    <div class="card-body">
+                        <h5 class="card-title">Pending Orders</h5>
+                        <p class="card-text">30</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity Section -->
+        <h2>Recent Activity</h2>
+        <ul class="list-group">
+            <li class="list-group-item">Order #1234 approved.</li>
+            <li class="list-group-item">Order #1235 pending.</li>
+            <li class="list-group-item">Order #1236 approved.</li>
+            <li class="list-group-item">Order #1237 rejected.</li>
+            <li class="list-group-item">Order #1238 pending.</li>
+        </ul>
+    </div>
+
+    <!-- Add Bootstrap JS and its dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
