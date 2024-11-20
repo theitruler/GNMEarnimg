@@ -104,6 +104,17 @@ def update_withdrawal(withdrawal_id):
 
     return redirect(url_for('withdraw'))  # Redirect back to the withdraw page
 
+@app.route('/partner')
+def partner():
+    response = requests.get("https://api.github.com/repos/theitruler/GNMEarning/releases/latest")
+    if response.status_code == 200:
+        latest_release = response.json()
+        download_url = latest_release['assets'][0]['browser_download_url']  # Get the download URL from the first asset
+    else:
+        download_url = "#"  # Fallback URL or handle error appropriately
+
+    return render_template('partner/partner.html', download_url=download_url)  # Pass the download URL to the template
+
 # ... other routes ...
 
 if __name__ == '__main__':
