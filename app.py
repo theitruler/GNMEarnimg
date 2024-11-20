@@ -115,6 +115,10 @@ def partner():
 
     return render_template('partner/partner.html', download_url=download_url)  # Pass the download URL to the template
 
+@app.route('/offer')
+def offer():
+    return render_template('customer/offer.html')
+
 # ... other routes ...
 
 if __name__ == '__main__':

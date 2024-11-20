@@ -1,0 +1,138 @@
+{% extends 'customer/nav.html' %}
+
+{% block title %}Special Offers - Grills N More{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+    }
+    .nav-link {
+        position: relative;
+    }
+    .nav-link::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: -4px;
+        left: 0;
+        background-color: #DC2626;
+        transition: width 0.3s ease;
+    }
+    .nav-link:hover::after {
+        width: 100%;
+    }
+    .hero-section {
+        background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                    url('https://images.unsplash.com/photo-1633945274405-b6c8069047b0?q=80&w=2070');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+    }
+    .countdown-box {
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+    .hero-button {
+        transition: transform 0.2s ease;
+    }
+    .hero-button:hover {
+        transform: translateY(-2px);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section with Timer -->
+<section class="hero-section min-h-screen flex items-center justify-center text-white px-4 py-8">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+        <h1 class="text-4xl sm:text-5xl md:text-7xl font-bold mb-4 sm:mb-6">FREE BIRYANI</h1>
+        <p class="text-lg sm:text-xl md:text-2xl mb-6 sm:mb-8">Limited Time Offer - No Minimum Order Value!</p>
+        
+        <!-- Countdown Timer -->
+        <div class="countdown-box w-full sm:w-auto inline-block mb-6 sm:mb-8 px-4 sm:px-8">
+            <p class="text-lg sm:text-xl mb-3 text-yellow-400 font-semibold">🎁 Special Offer!</p>
+            <div id="countdown" class="text-2xl sm:text-3xl font-bold mb-2"></div>
+            <p class="text-base sm:text-lg text-yellow-300">Get your free Biryani before time runs out!</p>
+        </div>
+
+        <p class="text-base sm:text-lg mb-6 sm:mb-8">🔥 No minimum order value required! 🔥</p>
+        
+        <a href="https://www.zomato.com/bangalore/grills-n-more-kalyan-nagar-bangalore/order" 
+           class="hero-button w-full sm:w-auto inline-block bg-red-600 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-lg sm:text-xl font-bold hover:bg-red-700 transition duration-300">
+            Order Now
+        </a>
+        
+        <p class="mt-6 sm:mt-8 text-xs sm:text-sm">*Terms and conditions apply. Limited to one free biryani per order.</p>
+    </div>
+</section>
+{% endblock %}
+
+<script>
+    // Updated countdown date to November 25, 2024
+    const countdownDate = new Date("November 25, 2024 00:00:00").getTime();
+    const countdownElement = document.getElementById("countdown");
+
+    const updateCountdown = () => {
+        const now = new Date().getTime();
+        const distance = countdownDate - now;
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        countdownElement.innerHTML = `
+            <div class="grid grid-cols-4 gap-4">
+                <div>
+                    <span class="text-4xl font-bold">${days}</span>
+                    <div class="text-sm">Days</div>
+                </div>
+                <div>
+                    <span class="text-4xl font-bold">${hours}</span>
+                    <div class="text-sm">Hours</div>
+                </div>
+                <div>
+                    <span class="text-4xl font-bold">${minutes}</span>
+                    <div class="text-sm">Minutes</div>
+                </div>
+                <div>
+                    <span class="text-4xl font-bold">${seconds}</span>
+                    <div class="text-sm">Seconds</div>
+                </div>
+            </div>
+        `;
+
+        if (distance < 0) {
+            clearInterval(timer);
+            countdownElement.innerHTML = "<div class='text-2xl text-red-500'>Offer has ended!</div>";
+        }
+    };
+
+    updateCountdown();
+    const timer = setInterval(updateCountdown, 1000);
+</script>
+
+<style>
+    /* Add these additional mobile-friendly styles */
+    @media (max-width: 640px) {
+        .countdown-box {
+            margin-left: -1rem;
+            margin-right: -1rem;
+            border-radius: 0;
+        }
+        
+        #countdown .grid {
+            grid-gap: 0.5rem;
+        }
+        
+        #countdown .text-4xl {
+            font-size: 1.75rem;
+        }
+    }
+</style>
