@@ -6,10 +6,12 @@
         <span class="navbar-toggler-icon"></span>
     </button>
     
-    <label class="toggle-container" {% if user_role == 'admin' %}style="display: block;"{% else %}style="display: none;"{% endif %}>
+    {% if session['user_role'] == 'admin' %}
+    <label class="toggle-container">
         <input type="checkbox" class="toggle-input" id="toggleSwitch">
         <span class="toggle-slider"></span>
     </label>
+    {% endif %}
 
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav mr-auto">
