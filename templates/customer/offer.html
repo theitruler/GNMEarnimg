@@ -4,9 +4,23 @@
 
 {% block extra_css %}
 <style>
+    @font-face {
+        font-family: 'CustomFont';
+        src: url("{{ url_for('static', filename='fonts/font1.ttf') }}") format('truetype');
+    }
+    
     body {
         font-family: 'Poppins', sans-serif;
     }
+    
+    .offer-heading {
+        font-family: 'CustomFont', sans-serif;
+        letter-spacing: 2px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        color: #FFD700;
+        margin-bottom: 5rem;
+    }
+    
     .nav-link {
         position: relative;
     }
@@ -51,7 +65,7 @@
 <!-- Hero Section with Timer -->
 <section class="hero-section min-h-screen flex items-center justify-center text-white px-4 py-8">
     <div class="max-w-4xl mx-auto px-4 text-center">
-        <h1 class="text-4xl sm:text-5xl md:text-7xl font-bold mb-4 sm:mb-6">FREE BIRYANI</h1>
+        <h1 class="offer-heading text-4xl sm:text-5xl md:text-7xl font-bold mb-4 sm:mb-6">FREE BIRYANI</h1>
         <p class="text-lg sm:text-xl md:text-2xl mb-6 sm:mb-8">Limited Time Offer - No Minimum Order Value!</p>
         
         <!-- Countdown Timer -->
