@@ -153,6 +153,24 @@ def toggle_bann_off():
     else:
         return jsonify({'message': 'Unauthorized access.'}), 403
 
+@app.route('/dashboard/orderapprove/reject/<int:image_id>', methods=['POST'])
+@login_required
+def reject_image(image_id):
+    reason = request.form.get('reason')  # Get the rejection reason from the form
+    try:
+        # Update the image status to 'rejected' in the database
+        response = supabase.table('images').update({'status': 'rejected', 'reason': reason}).eq('id', image_id).execute()
+        
+        # Check if the update was successful
+        if response.data:  # If response.data is not empty, the update was successful
+            flash(f'Image rejected successfully! Reason: {reason}', 'danger')  # Flash rejection message with reason
+        else:
+            flash('Failed to reject image. Please try again.', 'danger')
+    except Exception as e:
+        flash(f'An error occurred: {str(e)}', 'danger')
+    
+    return redirect(url_for('order_approve'))  # Redirect back to the order approval page
+
 # ... other routes ...
 
 if __name__ == '__main__':
