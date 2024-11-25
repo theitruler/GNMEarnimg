@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session
-from service.supabaseclient import sign_in_with_password, get_user, fetch_user_profile, fetch_user_email, sign_out, supabase, fetch_images_data, fetch_user_name, fetch_user_withdrawals, update_withdrawal_status, fetch_delivery_partners
+from service.supabaseclient import sign_in_with_password, get_user, fetch_user_profile, fetch_user_email, sign_out, supabase, fetch_images_data, fetch_user_name, fetch_user_withdrawals, update_withdrawal_status, fetch_delivery_partners, update_delivery_partner_bann
 from dotenv import load_dotenv
 import os
 import requests
@@ -39,8 +39,10 @@ def login():
         if user:
             user_profile = fetch_user_profile(user.id)
             if user_profile and user_profile.data and len(user_profile.data) > 0:
-                if user_profile.data[0]['roles'] in ['staff', 'admin']:
+                user_role = user_profile.data[0]['roles']
+                if user_role in ['staff', 'admin']:
                     session['user_id'] = user.id  # Store user ID in session
+                    session['user_role'] = user_role  # Store user role in session
                     return redirect(url_for('dashboard'))  # Redirect to dashboard
                 else:
                     flash('You do not have permission to access this area.', 'danger')
@@ -118,6 +120,79 @@ def partner():
 @app.route('/offer')
 def offer():
     return render_template('customer/offer.html')
+
+@app.route('/toggle_bann', methods=['POST'])
+@login_required
+def toggle_bann():
+    if session.get('user_role') == 'admin':
+        try:
+            # Update the bann field to true for users with the delivery role
+            response = supabase.table('profiles').update({'bann': True}).eq('roles', 'delivery').execute()
+            if response.data:
+                return jsonify({'message': 'Users updated successfully!'}), 200
+            else:
+                return jsonify({'message': 'No users found with the delivery role.'}), 404
+        except Exception as e:
+            return jsonify({'message': f'An error occurred: {str(e)}'}), 500
+    else:
+        return jsonify({'message': 'Unauthorized access.'}), 403
+
+@app.route('/toggle_bann_off', methods=['POST'])
+@login_required
+def toggle_bann_off():
+    if session.get('user_role') == 'admin':
+        try:
+            # Update the bann field to false for users with the delivery role
+            response = supabase.table('profiles').update({'bann': False}).eq('roles', 'delivery').execute()
+            if response.data:
+                return jsonify({'message': 'Users updated successfully!'}), 200
+            else:
+                return jsonify({'message': 'No users found with the delivery role.'}), 404
+        except Exception as e:
+            return jsonify({'message': f'An error occurred: {str(e)}'}), 500
+    else:
+        return jsonify({'message': 'Unauthorized access.'}), 403
+
+@app.route('/dashboard/orderapprove/reject/<int:image_id>', methods=['POST'])
+@login_required
+def reject_image(image_id):
+    reason = request.form.get('reason')  # Get the rejection reason from the form
+    try:
+        # Update the image status to 'rejected' in the database
+        response = supabase.table('images').update({'status': 'rejected', 'reason': reason}).eq('id', image_id).execute()
+        
+        # Check if the update was successful
+        if response.data:  # If response.data is not empty, the update was successful
+            flash(f'Image rejected successfully! Reason: {reason}', 'danger')  # Flash rejection message with reason
+        else:
+            flash('Failed to reject image. Please try again.', 'danger')
+    except Exception as e:
+        flash(f'An error occurred: {str(e)}', 'danger')
+    
+    return redirect(url_for('order_approve'))  # Redirect back to the order approval page
+
+@app.route('/api/toggle_bann', methods=['POST'])
+@login_required
+def api_toggle_bann():
+    if session.get('user_role') != 'admin':
+        return jsonify({'message': 'Unauthorized access.'}), 403
+        
+    try:
+        data = request.get_json()
+        user_id = data.get('user_id')
+        bann = data.get('bann')
+        
+        if not user_id or bann is None:
+            return jsonify({'message': 'Missing required fields.'}), 400
+            
+        result = update_delivery_partner_bann(user_id, bann)
+        if result:
+            return jsonify({'message': 'Bann status updated successfully!'}), 200
+        else:
+            return jsonify({'message': 'Failed to update bann status.'}), 500
+            
+    except Exception as e:
+        return jsonify({'message': f'An error occurred: {str(e)}'}), 500
 
 # ... other routes ...
 

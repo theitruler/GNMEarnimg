@@ -7,21 +7,117 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         body {
-            padding-top: 56px; /* Height of navbar */
+            padding-top: 56px;
         }
         .sidebar {
-            height: calc(100vh - 56px); /* Adjust height to account for navbar */
-            position: fixed; /* Fix the sidebar to the left */
-            width: 250px; /* Set a fixed width for the sidebar */
-            background-color: #f8f9fa; /* Background color for the sidebar */
-            padding-top: 20px; /* Padding for the sidebar */
+            height: calc(100vh - 56px);
+            position: fixed;
+            width: 250px;
+            background-color: #f8f9fa;
+            padding-top: 20px;
         }
         .content {
-            margin-left: 250px; /* Adjust based on sidebar width */
+            margin-left: 250px;
             padding: 20px;
         }
         .card {
             margin-bottom: 20px;
+        }
+        .user-details-panel {
+            position: fixed;
+            top: 56px;
+            right: -400px;
+            width: 400px;
+            height: calc(100vh - 56px);
+            background-color: white;
+            box-shadow: -2px 0 5px rgba(0,0,0,0.2);
+            transition: right 0.3s ease;
+            padding: 20px;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        .user-details-panel.active {
+            right: 0;
+        }
+        .close-panel {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            font-size: 20px;
+        }
+        .clickable-name {
+            cursor: pointer;
+            color: #007bff;
+            text-decoration: underline;
+        }
+        .stats-box {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            flex: 1;
+        }
+        .stats-container {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+        .stats-box h5 {
+            margin: 0;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        .stats-box p {
+            margin: 10px 0 0 0;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #343a40;
+        }
+        .total-box { background-color: #e3f2fd; }
+        .approved-box { background-color: #e8f5e9; }
+        .rejected-box { background-color: #ffebee; }
+        /* Toggle Switch Styles */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 22px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 22px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+        input:checked + .slider:before {
+            transform: translateX(18px);
         }
     </style>
 </head>
@@ -50,18 +146,182 @@
                 <tbody>
                     {% for profile in profiles %}
                     <tr>
-                        <td>{{ profile.name }}</td>
+                        <td>
+                            <span class="clickable-name" 
+                                  onclick='showUserDetails({{ profile|tojson|safe }})'>
+                                {{ profile.name }}
+                            </span>
+                        </td>
                         <td>{{ profile.zomato_id }}</td>
                         <td>{{ profile.upi_id }}</td>
                         <td>{{ profile.phone }}</td>
-                        <td>{{ profile.bann }}</td>
+                        <td>
+                            <label class="switch">
+                                <input type="checkbox" 
+                                       {% if profile.bann %}checked{% endif %}
+                                       onchange="toggleBann('{{ profile.id }}', this.checked)">
+                                <span class="slider"></span>
+                            </label>
+                        </td>
                         <td>{{ profile.email }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
-            <!-- Add more content as needed -->
         </main>
     </div>
+
+    <!-- User Details Side Panel -->
+    <div class="user-details-panel" id="userDetailsPanel">
+        <span class="close-panel" onclick="closePanel()">&times;</span>
+        <h3>User Details</h3>
+        <div class="user-info">
+            <p><strong>Name:</strong> <span id="userName"></span></p>
+            <p><strong>Zomato ID:</strong> <span id="userZomatoId"></span></p>
+            <p><strong>UPI ID:</strong> <span id="userUpiId"></span></p>
+            <p><strong>Phone:</strong> <span id="userPhone"></span></p>
+            <p>
+                <strong>Bann:</strong>
+                <label class="switch">
+                    <input type="checkbox" id="userBannToggle" onchange="toggleBann(currentProfile.id, this.checked)">
+                    <span class="slider"></span>
+                </label>
+            </p>
+            <p><strong>Email:</strong> <span id="userEmail"></span></p>
+            
+            <!-- Stats Boxes -->
+            <div class="stats-container">
+                <div class="stats-box total-box">
+                    <h5>Total Images</h5>
+                    <p id="totalImages">0</p>
+                </div>
+                <div class="stats-box approved-box">
+                    <h5>Approved Images</h5>
+                    <p id="approvedImages">0</p>
+                </div>
+                <div class="stats-box rejected-box">
+                    <h5>Rejected Images</h5>
+                    <p id="rejectedImages">0</p>
+                </div>
+            </div>
+        </div>
+        <div class="user-images">
+            <h4 class="mt-4">User Images</h4>
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Status</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userImagesTable">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentProfile = null;
+
+        function showUserDetails(profile) {
+            currentProfile = profile;
+            // Update user details
+            document.getElementById('userName').textContent = profile.name;
+            document.getElementById('userZomatoId').textContent = profile.zomato_id;
+            document.getElementById('userUpiId').textContent = profile.upi_id;
+            document.getElementById('userPhone').textContent = profile.phone;
+            document.getElementById('userBannToggle').checked = profile.bann;
+            document.getElementById('userEmail').textContent = profile.email;
+            
+            // Update image statistics
+            let totalImages = 0;
+            let approvedImages = 0;
+            let rejectedImages = 0;
+            
+            if (profile.images && profile.images.length > 0) {
+                totalImages = profile.images.length;
+                approvedImages = profile.images.filter(img => img.status === 'approved').length;
+                rejectedImages = profile.images.filter(img => img.status === 'rejected').length;
+            }
+            
+            document.getElementById('totalImages').textContent = totalImages;
+            document.getElementById('approvedImages').textContent = approvedImages;
+            document.getElementById('rejectedImages').textContent = rejectedImages;
+            
+            // Update images table
+            const imagesTableBody = document.getElementById('userImagesTable');
+            imagesTableBody.innerHTML = ''; // Clear existing content
+            
+            if (profile.images && profile.images.length > 0) {
+                profile.images.forEach(image => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td><img src="${image.image_url}" alt="User Image" style="max-width: 100px; max-height: 100px;"></td>
+                        <td>${image.status}</td>
+                        <td>${image.price || 'N/A'}</td>
+                    `;
+                    imagesTableBody.appendChild(row);
+                });
+            } else {
+                const row = document.createElement('tr');
+                row.innerHTML = '<td colspan="3" class="text-center">No images found</td>';
+                imagesTableBody.appendChild(row);
+            }
+            
+            document.getElementById('userDetailsPanel').classList.add('active');
+        }
+
+        function closePanel() {
+            document.getElementById('userDetailsPanel').classList.remove('active');
+        }
+
+        async function toggleBann(userId, bannStatus) {
+            try {
+                const response = await fetch('/api/toggle_bann', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        user_id: userId,
+                        bann: bannStatus
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to update bann status');
+                }
+
+                // Update all instances of this user's bann status on the page
+                const tableToggles = document.querySelectorAll(`input[type="checkbox"]`);
+                tableToggles.forEach(toggle => {
+                    if (toggle.closest('tr')?.querySelector('td')?.textContent.includes(userId)) {
+                        toggle.checked = bannStatus;
+                    }
+                });
+
+                if (currentProfile && currentProfile.id === userId) {
+                    document.getElementById('userBannToggle').checked = bannStatus;
+                    currentProfile.bann = bannStatus;
+                }
+
+                // Find the user's name from the table
+                const userRow = document.querySelector(`tr td .clickable-name[onclick*="${userId}"]`);
+                const userName = userRow ? userRow.textContent.trim() : "User";
+                
+                // Show success message
+                alert(`${userName} has been ${bannStatus ? 'banned' : 'unbanned'} successfully!`);
+
+            } catch (error) {
+                console.error('Error updating bann status:', error);
+                alert('Failed to update bann status. Please try again.');
+                // Revert the toggle state
+                event.target.checked = !bannStatus;
+            }
+        }
+    </script>
 </body>
 </html>

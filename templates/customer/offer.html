@@ -4,9 +4,23 @@
 
 {% block extra_css %}
 <style>
+    @font-face {
+        font-family: 'CustomFont';
+        src: url("{{ url_for('static', filename='fonts/font1.ttf') }}") format('truetype');
+    }
+    
     body {
         font-family: 'Poppins', sans-serif;
     }
+    
+    .offer-heading {
+        font-family: 'CustomFont', sans-serif;
+        letter-spacing: 2px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        color: #FFD700;
+        margin-bottom: 5rem;
+    }
+    
     .nav-link {
         position: relative;
     }
@@ -51,7 +65,7 @@
 <!-- Hero Section with Timer -->
 <section class="hero-section min-h-screen flex items-center justify-center text-white px-4 py-8">
     <div class="max-w-4xl mx-auto px-4 text-center">
-        <h1 class="text-4xl sm:text-5xl md:text-7xl font-bold mb-4 sm:mb-6">FREE BIRYANI</h1>
+        <h1 class="offer-heading text-4xl sm:text-5xl md:text-7xl font-bold mb-4 sm:mb-6">FREE BIRYANI</h1>
         <p class="text-lg sm:text-xl md:text-2xl mb-6 sm:mb-8">Limited Time Offer - No Minimum Order Value!</p>
         
         <!-- Countdown Timer -->
@@ -71,55 +85,68 @@
         <p class="mt-6 sm:mt-8 text-xs sm:text-sm">*Terms and conditions apply. Limited to one free biryani per order.</p>
     </div>
 </section>
-{% endblock %}
 
+<!-- Move the script inside the content block -->
 <script>
-    // Updated countdown date to November 25, 2024
-    const countdownDate = new Date("November 25, 2024 00:00:00").getTime();
-    const countdownElement = document.getElementById("countdown");
+    document.addEventListener('DOMContentLoaded', function() {
+        // Updated countdown date to November 29, 2024
+        const countdownDate = new Date("November 29, 2024 00:00:00").getTime();
+        const countdownElement = document.getElementById("countdown");
+        const heroSection = document.querySelector('.hero-section');
 
-    const updateCountdown = () => {
-        const now = new Date().getTime();
-        const distance = countdownDate - now;
+        const updateCountdown = () => {
+            const now = new Date().getTime();
+            const distance = countdownDate - now;
 
-        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            if (distance < 0) {
+                clearInterval(timer);
+                // Replace entire hero section content with "No offers" message
+                heroSection.innerHTML = `
+                    <div class="max-w-4xl mx-auto px-4 text-center">
+                        <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold mb-6">No Active Offers</h1>
+                        <p class="text-xl mb-8">Check back later for new exciting offers!</p>
+                        <a href="/" class="hero-button inline-block bg-red-600 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-lg sm:text-xl font-bold hover:bg-red-700 transition duration-300">
+                            Return Home
+                        </a>
+                    </div>
+                `;
+                return;
+            }
 
-        countdownElement.innerHTML = `
-            <div class="grid grid-cols-4 gap-4">
-                <div>
-                    <span class="text-4xl font-bold">${days}</span>
-                    <div class="text-sm">Days</div>
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            countdownElement.innerHTML = `
+                <div class="grid grid-cols-4 gap-4">
+                    <div>
+                        <span class="text-4xl font-bold">${days}</span>
+                        <div class="text-sm">Days</div>
+                    </div>
+                    <div>
+                        <span class="text-4xl font-bold">${hours}</span>
+                        <div class="text-sm">Hours</div>
+                    </div>
+                    <div>
+                        <span class="text-4xl font-bold">${minutes}</span>
+                        <div class="text-sm">Minutes</div>
+                    </div>
+                    <div>
+                        <span class="text-4xl font-bold">${seconds}</span>
+                        <div class="text-sm">Seconds</div>
+                    </div>
                 </div>
-                <div>
-                    <span class="text-4xl font-bold">${hours}</span>
-                    <div class="text-sm">Hours</div>
-                </div>
-                <div>
-                    <span class="text-4xl font-bold">${minutes}</span>
-                    <div class="text-sm">Minutes</div>
-                </div>
-                <div>
-                    <span class="text-4xl font-bold">${seconds}</span>
-                    <div class="text-sm">Seconds</div>
-                </div>
-            </div>
-        `;
+            `;
+        };
 
-        if (distance < 0) {
-            clearInterval(timer);
-            countdownElement.innerHTML = "<div class='text-2xl text-red-500'>Offer has ended!</div>";
-        }
-    };
-
-    updateCountdown();
-    const timer = setInterval(updateCountdown, 1000);
+        updateCountdown();
+        const timer = setInterval(updateCountdown, 1000);
+    });
 </script>
 
+<!-- Move the mobile styles inside the content block -->
 <style>
-    /* Add these additional mobile-friendly styles */
     @media (max-width: 640px) {
         .countdown-box {
             margin-left: -1rem;
@@ -136,3 +163,4 @@
         }
     }
 </style>
+{% endblock %}

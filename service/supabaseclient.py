@@ -76,11 +76,25 @@ def update_withdrawal_status(withdrawal_id: str, success: bool):
 
 def fetch_delivery_partners():
     try:
-        # Fetch specific fields from the profiles table where roles is 'delivery'
-        response = supabase.table('profiles').select('name, zomato_id, upi_id, phone, bann, email').eq('roles', 'delivery').execute()
-        return response.data  # Return the data from the response
+        # Fetch delivery partner profiles
+        profiles_response = supabase.table('profiles').select('id, name, zomato_id, upi_id, phone, bann, email').eq('roles', 'delivery').execute()
+        profiles = profiles_response.data
+
+        # For each profile, fetch their images
+        for profile in profiles:
+            images_response = supabase.table('images').select('*').eq('user_id', profile['id']).execute()
+            profile['images'] = images_response.data
+
+        return profiles
     except Exception as e:
         print(f"Error fetching delivery partners: {str(e)}")
         return None
 
-
+def update_delivery_partner_bann(user_id: str, bann: bool):
+    try:
+        # Update the bann status of the delivery partner
+        response = supabase.table('profiles').update({'bann': bann}).eq('id', user_id).eq('roles', 'delivery').execute()
+        return response.data
+    except Exception as e:
+        print(f"Error updating bann status: {str(e)}")
+        return None
