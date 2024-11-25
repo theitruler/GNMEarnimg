@@ -79,6 +79,46 @@
         .total-box { background-color: #e3f2fd; }
         .approved-box { background-color: #e8f5e9; }
         .rejected-box { background-color: #ffebee; }
+        /* Toggle Switch Styles */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 22px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 22px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+        input:checked + .slider:before {
+            transform: translateX(18px);
+        }
     </style>
 </head>
 <body>
@@ -115,7 +155,14 @@
                         <td>{{ profile.zomato_id }}</td>
                         <td>{{ profile.upi_id }}</td>
                         <td>{{ profile.phone }}</td>
-                        <td>{{ profile.bann }}</td>
+                        <td>
+                            <label class="switch">
+                                <input type="checkbox" 
+                                       {% if profile.bann %}checked{% endif %}
+                                       onchange="toggleBann('{{ profile.id }}', this.checked)">
+                                <span class="slider"></span>
+                            </label>
+                        </td>
                         <td>{{ profile.email }}</td>
                     </tr>
                     {% endfor %}
@@ -133,7 +180,13 @@
             <p><strong>Zomato ID:</strong> <span id="userZomatoId"></span></p>
             <p><strong>UPI ID:</strong> <span id="userUpiId"></span></p>
             <p><strong>Phone:</strong> <span id="userPhone"></span></p>
-            <p><strong>Bann:</strong> <span id="userBann"></span></p>
+            <p>
+                <strong>Bann:</strong>
+                <label class="switch">
+                    <input type="checkbox" id="userBannToggle" onchange="toggleBann(currentProfile.id, this.checked)">
+                    <span class="slider"></span>
+                </label>
+            </p>
             <p><strong>Email:</strong> <span id="userEmail"></span></p>
             
             <!-- Stats Boxes -->
@@ -171,13 +224,16 @@
     </div>
 
     <script>
+        let currentProfile = null;
+
         function showUserDetails(profile) {
+            currentProfile = profile;
             // Update user details
             document.getElementById('userName').textContent = profile.name;
             document.getElementById('userZomatoId').textContent = profile.zomato_id;
             document.getElementById('userUpiId').textContent = profile.upi_id;
             document.getElementById('userPhone').textContent = profile.phone;
-            document.getElementById('userBann').textContent = profile.bann;
+            document.getElementById('userBannToggle').checked = profile.bann;
             document.getElementById('userEmail').textContent = profile.email;
             
             // Update image statistics
@@ -220,6 +276,51 @@
 
         function closePanel() {
             document.getElementById('userDetailsPanel').classList.remove('active');
+        }
+
+        async function toggleBann(userId, bannStatus) {
+            try {
+                const response = await fetch('/api/toggle_bann', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        user_id: userId,
+                        bann: bannStatus
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to update bann status');
+                }
+
+                // Update all instances of this user's bann status on the page
+                const tableToggles = document.querySelectorAll(`input[type="checkbox"]`);
+                tableToggles.forEach(toggle => {
+                    if (toggle.closest('tr')?.querySelector('td')?.textContent.includes(userId)) {
+                        toggle.checked = bannStatus;
+                    }
+                });
+
+                if (currentProfile && currentProfile.id === userId) {
+                    document.getElementById('userBannToggle').checked = bannStatus;
+                    currentProfile.bann = bannStatus;
+                }
+
+                // Find the user's name from the table
+                const userRow = document.querySelector(`tr td .clickable-name[onclick*="${userId}"]`);
+                const userName = userRow ? userRow.textContent.trim() : "User";
+                
+                // Show success message
+                alert(`${userName} has been ${bannStatus ? 'banned' : 'unbanned'} successfully!`);
+
+            } catch (error) {
+                console.error('Error updating bann status:', error);
+                alert('Failed to update bann status. Please try again.');
+                // Revert the toggle state
+                event.target.checked = !bannStatus;
+            }
         }
     </script>
 </body>

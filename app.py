@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session
-from service.supabaseclient import sign_in_with_password, get_user, fetch_user_profile, fetch_user_email, sign_out, supabase, fetch_images_data, fetch_user_name, fetch_user_withdrawals, update_withdrawal_status, fetch_delivery_partners
+from service.supabaseclient import sign_in_with_password, get_user, fetch_user_profile, fetch_user_email, sign_out, supabase, fetch_images_data, fetch_user_name, fetch_user_withdrawals, update_withdrawal_status, fetch_delivery_partners, update_delivery_partner_bann
 from dotenv import load_dotenv
 import os
 import requests
@@ -170,6 +170,29 @@ def reject_image(image_id):
         flash(f'An error occurred: {str(e)}', 'danger')
     
     return redirect(url_for('order_approve'))  # Redirect back to the order approval page
+
+@app.route('/api/toggle_bann', methods=['POST'])
+@login_required
+def api_toggle_bann():
+    if session.get('user_role') != 'admin':
+        return jsonify({'message': 'Unauthorized access.'}), 403
+        
+    try:
+        data = request.get_json()
+        user_id = data.get('user_id')
+        bann = data.get('bann')
+        
+        if not user_id or bann is None:
+            return jsonify({'message': 'Missing required fields.'}), 400
+            
+        result = update_delivery_partner_bann(user_id, bann)
+        if result:
+            return jsonify({'message': 'Bann status updated successfully!'}), 200
+        else:
+            return jsonify({'message': 'Failed to update bann status.'}), 500
+            
+    except Exception as e:
+        return jsonify({'message': f'An error occurred: {str(e)}'}), 500
 
 # ... other routes ...
 

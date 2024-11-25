@@ -90,4 +90,11 @@ def fetch_delivery_partners():
         print(f"Error fetching delivery partners: {str(e)}")
         return None
 
-
+def update_delivery_partner_bann(user_id: str, bann: bool):
+    try:
+        # Update the bann status of the delivery partner
+        response = supabase.table('profiles').update({'bann': bann}).eq('id', user_id).eq('roles', 'delivery').execute()
+        return response.data
+    except Exception as e:
+        print(f"Error updating bann status: {str(e)}")
+        return None
