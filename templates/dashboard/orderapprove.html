@@ -182,7 +182,7 @@
                 <tbody>
                     {% for image in images %}
                     <tr>
-                        <td><strong>#{{ image.id }}</strong></td>
+                        <td><strong>#{{ image.id }}</strong> ({{ image.user.name }})</td>
                         <td>₹{{ "%.2f"|format(image.price|float) }}</td>
                         <td class="status-cell">
                             <span class="badge badge-{{ 'success' if image.status == 'approved' else 'warning' }}">

@@ -39,8 +39,15 @@ def sign_out():
 
 def fetch_images_data():
     # Fetch specific fields from the images table where status is 'pending'
-    response = supabase.table('images').select('id, status, image_url, price').eq('status', 'pending').execute()
-    return response.data  # Return the data from the response
+    response = supabase.table('images').select('id, user_id, status, image_url, price').eq('status', 'pending').execute()
+    images_data = response.data
+
+    # Fetch user names for each image
+    for image in images_data:
+        user_response = supabase.table('profiles').select('name').eq('id', image['user_id']).execute()
+        image['user'] = {'name': user_response.data[0]['name'] if user_response.data else 'Unknown'}
+
+    return images_data
 
 def fetch_user_name(user_id):
     # Fetch the user's name from the profiles table using the user ID
