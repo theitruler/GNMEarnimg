@@ -7,21 +7,49 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         body {
-            padding-top: 56px; /* Height of navbar */
+            padding-top: 56px;
         }
         .sidebar {
-            height: calc(100vh - 56px); /* Adjust height to account for navbar */
-            position: fixed; /* Fix the sidebar to the left */
-            width: 250px; /* Set a fixed width for the sidebar */
-            background-color: #f8f9fa; /* Background color for the sidebar */
-            padding-top: 20px; /* Padding for the sidebar */
+            height: calc(100vh - 56px);
+            position: fixed;
+            width: 250px;
+            background-color: #f8f9fa;
+            padding-top: 20px;
         }
         .content {
-            margin-left: 250px; /* Adjust based on sidebar width */
+            margin-left: 250px;
             padding: 20px;
         }
         .card {
             margin-bottom: 20px;
+        }
+        .user-details-panel {
+            position: fixed;
+            top: 56px;
+            right: -400px;
+            width: 400px;
+            height: calc(100vh - 56px);
+            background-color: white;
+            box-shadow: -2px 0 5px rgba(0,0,0,0.2);
+            transition: right 0.3s ease;
+            padding: 20px;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        .user-details-panel.active {
+            right: 0;
+        }
+        .close-panel {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            font-size: 20px;
+        }
+        .clickable-name {
+            cursor: pointer;
+            color: #007bff;
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -50,7 +78,12 @@
                 <tbody>
                     {% for profile in profiles %}
                     <tr>
-                        <td>{{ profile.name }}</td>
+                        <td>
+                            <span class="clickable-name" 
+                                  onclick='showUserDetails({{ profile|tojson|safe }})'>
+                                {{ profile.name }}
+                            </span>
+                        </td>
                         <td>{{ profile.zomato_id }}</td>
                         <td>{{ profile.upi_id }}</td>
                         <td>{{ profile.phone }}</td>
@@ -60,8 +93,75 @@
                     {% endfor %}
                 </tbody>
             </table>
-            <!-- Add more content as needed -->
         </main>
     </div>
+
+    <!-- User Details Side Panel -->
+    <div class="user-details-panel" id="userDetailsPanel">
+        <span class="close-panel" onclick="closePanel()">&times;</span>
+        <h3>User Details</h3>
+        <div class="user-info">
+            <p><strong>Name:</strong> <span id="userName"></span></p>
+            <p><strong>Zomato ID:</strong> <span id="userZomatoId"></span></p>
+            <p><strong>UPI ID:</strong> <span id="userUpiId"></span></p>
+            <p><strong>Phone:</strong> <span id="userPhone"></span></p>
+            <p><strong>Bann:</strong> <span id="userBann"></span></p>
+            <p><strong>Email:</strong> <span id="userEmail"></span></p>
+        </div>
+        <div class="user-images">
+            <h4 class="mt-4">User Images</h4>
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Status</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userImagesTable">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showUserDetails(profile) {
+            // Update user details
+            document.getElementById('userName').textContent = profile.name;
+            document.getElementById('userZomatoId').textContent = profile.zomato_id;
+            document.getElementById('userUpiId').textContent = profile.upi_id;
+            document.getElementById('userPhone').textContent = profile.phone;
+            document.getElementById('userBann').textContent = profile.bann;
+            document.getElementById('userEmail').textContent = profile.email;
+            
+            // Update images table
+            const imagesTableBody = document.getElementById('userImagesTable');
+            imagesTableBody.innerHTML = ''; // Clear existing content
+            
+            if (profile.images && profile.images.length > 0) {
+                profile.images.forEach(image => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td><img src="${image.image_url}" alt="User Image" style="max-width: 100px; max-height: 100px;"></td>
+                        <td>${image.status}</td>
+                        <td>${image.price || 'N/A'}</td>
+                    `;
+                    imagesTableBody.appendChild(row);
+                });
+            } else {
+                const row = document.createElement('tr');
+                row.innerHTML = '<td colspan="3" class="text-center">No images found</td>';
+                imagesTableBody.appendChild(row);
+            }
+            
+            document.getElementById('userDetailsPanel').classList.add('active');
+        }
+
+        function closePanel() {
+            document.getElementById('userDetailsPanel').classList.remove('active');
+        }
+    </script>
 </body>
 </html>
