@@ -51,6 +51,34 @@
             color: #007bff;
             text-decoration: underline;
         }
+        .stats-box {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            flex: 1;
+        }
+        .stats-container {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+        .stats-box h5 {
+            margin: 0;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        .stats-box p {
+            margin: 10px 0 0 0;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #343a40;
+        }
+        .total-box { background-color: #e3f2fd; }
+        .approved-box { background-color: #e8f5e9; }
+        .rejected-box { background-color: #ffebee; }
     </style>
 </head>
 <body>
@@ -107,6 +135,22 @@
             <p><strong>Phone:</strong> <span id="userPhone"></span></p>
             <p><strong>Bann:</strong> <span id="userBann"></span></p>
             <p><strong>Email:</strong> <span id="userEmail"></span></p>
+            
+            <!-- Stats Boxes -->
+            <div class="stats-container">
+                <div class="stats-box total-box">
+                    <h5>Total Images</h5>
+                    <p id="totalImages">0</p>
+                </div>
+                <div class="stats-box approved-box">
+                    <h5>Approved Images</h5>
+                    <p id="approvedImages">0</p>
+                </div>
+                <div class="stats-box rejected-box">
+                    <h5>Rejected Images</h5>
+                    <p id="rejectedImages">0</p>
+                </div>
+            </div>
         </div>
         <div class="user-images">
             <h4 class="mt-4">User Images</h4>
@@ -135,6 +179,21 @@
             document.getElementById('userPhone').textContent = profile.phone;
             document.getElementById('userBann').textContent = profile.bann;
             document.getElementById('userEmail').textContent = profile.email;
+            
+            // Update image statistics
+            let totalImages = 0;
+            let approvedImages = 0;
+            let rejectedImages = 0;
+            
+            if (profile.images && profile.images.length > 0) {
+                totalImages = profile.images.length;
+                approvedImages = profile.images.filter(img => img.status === 'approved').length;
+                rejectedImages = profile.images.filter(img => img.status === 'rejected').length;
+            }
+            
+            document.getElementById('totalImages').textContent = totalImages;
+            document.getElementById('approvedImages').textContent = approvedImages;
+            document.getElementById('rejectedImages').textContent = rejectedImages;
             
             // Update images table
             const imagesTableBody = document.getElementById('userImagesTable');
